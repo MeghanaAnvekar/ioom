@@ -1,72 +1,49 @@
-#include <iostream>
-
-using namespace std;
-
-class Rod
+#include "header.h"
+int main()
 {
-	private:
-		int* arr;
-		int top;
-		int size;
-	
-	public:
-		Rod(int n)
-		{
-			arr = new int[n];
-			top = 0;
-			size = n;
-		}
-		
-		~Rod()
-		{
-			delete arr;
-		}
-		
-		int push(int disk)
-		{
-			if(top == size)
-				return 0;
-			else
-				arr[top++] = disk;
-			return 1;
-		}
-		
-		int pop()
-		{
-			if(!top)
-				return 0;
-			else
-				top--;
-			return 1;
-		}
-		
-		int peek()
-		{
-			if(top == 0)
-			return -1;
-			else
-			return arr[top-1];
-		}
 
+	char ch = 'y';
 
-};
-class TowersOfHanoi
-{
-	private: Rod *a,*b,*c;
+	while(ch == 'y')
+	{
+		int n;
 	
-	public:
-		TowersOfHanoi(int n)
+		repeat:
+		cout<<"********************************************************************\n";
+		cout<<"                  	Towers of Hanoi                             \n";
+		cout<<"********************************************************************\n";
+		cout<<"\n\nPlease enter the height of the tower (No. of disks) ......";
+		cin>>n;
+		TowersOfHanoi game(n);
+		int choice,won;
+		while( !(won = game.won()))
 		{
-		   a = new Rod(n);
-		   b = new Rod(n);
-		   c = new Rod(n);
-		}
+			game.print();
+			cout<<"\n\n1. MOVE  (disk no. ,destination)  2.QUIT\n\n";
+			cin>>choice;
 		
-		~TowersOfHanoi()
-		{
-			delete a;
-			delete b;
-			delete c;
+			if(choice == 1)
+			{
+			
+				int disk; char des;
+				cin>>disk>>des;
+			
+				game.move(disk,des);
+			}
+			else
+			   exit(0);
 		}
-};
+	
+		if(won)
+		{
+			game.print();
+			cout<<"\n\n\nCONGRATULATIONS !!! YOU WON THE GAME\n\n";
+			cout<<"How about one more game...? (y/n)\n\n ";
+		
+		}
+		cin >> ch;
+	
+		}
+	return 0;
+}
 
