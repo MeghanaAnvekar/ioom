@@ -5,17 +5,58 @@
 
 using namespace std;
 
-class Product;
-class Customer;
+class Product
+{
+	int productID;
+	string productName;
+	string productStatus;
+	float productPrice;
+
+
+	public:
+	Product();
+	void setProductDetails(int id, string name, string status, float price);
+	string getProductName();
+	string getProductAvailability();
+	string getStatus();
+	void setProductAvailability(string status);	
+	float getProductPrice();
+	int getProductID();
+	void printProductDetails();
+	
+	
+};
+
+class Customer
+{
+	int customerID;
+	string customerName;
+	int contactNumber;
+	int list_count;
+	Product  list[40];
+	
+	public:
+	Customer();
+	void setCustomerDetails(int id, string name, long number);
+	void addBookedProduct(Product x);
+	float getTotalAmount();
+	string getCustomerName();
+	int getCustomerContactNo();
+	void printCustomerDetails();
+	int getCustomerID();
+	Product inListAtIndex(int i);
+	int productListCount();
+	
+};
+
+
 class RetailStore
 {
 	int customer_count;
 	int product_count;
 	string store_name;
-	Product *product_list;
-	int product_list_size;
-	Customer *customer_list;
-	int customer_list_size;
+	Product product_list[200];
+	Customer customer_list[40];
 	
 	public:
 	
@@ -39,61 +80,11 @@ class RetailStore
 };
 
 
-class Customer
-{
-	int customerID;
-	string customerName;
-	int contactNumber;
-	int list_size;
-	int list_count;
-	Product * list;
-	
-	public:
-	Customer();
-	void setCustomerDetails(int id, string name, long number);
-	void addBookedProduct(Product x);
-	float getTotalAmount();
-	string getCustomerName();
-	int getCustomerContactNo();
-	void printCustomerDetails();
-	int getCustomerID();
-	Product inListAtIndex(int i);
-	int productListCount();
-	
-};
-
-class Product
-{
-	int productID;
-	string productName;
-	string productStatus;
-	float productPrice;
-
-
-	public:
-	Product();
-	void setProductDetails(int id, string name, string status, float price);
-	string getProductName();
-	string getProductAvailability();
-	string getStatus();
-	void setProductAvailability(string status);	
-	float getProductPrice();
-	int getProductID();
-	void printProductDetails();
-	
-	
-};
 
 
 RetailStore::RetailStore(string name)
 {
 	store_name = name;
-	product_list_size = 10;
-	customer_list_size = 10;
-	
-	product_list = new Product[product_list_size] ;
-	customer_list = new Customer[customer_list_size] ;
-	
 	product_count = 0;
 	customer_count = 0;
 	
@@ -117,42 +108,16 @@ int RetailStore::searchCustomer(string name, int contactNo)
 void RetailStore::addCustomer(string name, int contactNo)
 {
 	if(!searchCustomer(name, contactNo))
-	{
-		if(customer_count > customer_list_size )
-		{
-			Customer *temp = new Customer[customer_list_size * 2]();
-			
-			for(int i = 0; i < customer_list_size; ++i)
-			{
-				temp[i] = customer_list[i]; 
-			}
-			
-			delete customer_list;
-			customer_list = temp; 
-			customer_list_size *= 2;
-		}
-		
+	{	
 		customer_list[customer_count - 1].setCustomerDetails(generateCustomerID(),name,contactNo);
 	}
 }
 		
 void RetailStore::addProduct(string name, float price)
 {
-	if(product_count == product_list_size )
-	{
-		Product *temp = new Product[product_list_size * 2];
-		
-		for(int i = 0; i < product_list_size; ++i)
-		{
-			temp[i] = product_list[i]; 
-		}
-		
-		delete product_list;
-		product_list = temp; 
-		product_list_size *= 2;
-	}
 	
-	product_list[product_count-1].setProductDetails(generateProductID(),name,string("Available"),price);
+	if(product_count < 200)
+		product_list[product_count-1].setProductDetails(generateProductID(),name,string("Available"),price);
 	
 	
 }
@@ -222,8 +187,8 @@ void RetailStore::printBill(string CustomerName,int contactNo)
 		cout<<"________________________________________________________________________________________\n";
 		cout<<"********************************* Invoice **********************************************\n";
 		
-		cout<<"Sr.No.       Product ID          Product Name              Price\n";
-		cout<<"----------------------------------------------------------------\n\n";
+		cout<<"Sr.No.       Product ID          Product Name                      Price\n";
+		cout<<"------------------------------------------------------------------------------\n\n";
 		
 		int list_count = temp.productListCount();
 		for(int i =0; i < list_count;++i)
@@ -231,13 +196,13 @@ void RetailStore::printBill(string CustomerName,int contactNo)
 			Product x = temp.inListAtIndex(i);
 			cout<<"  "<<i+1<<"            ";
 			cout<<left<<setw(10)<<x.getProductID();
-			cout<<left<<setw(30)<<x.getProductName();
+			cout<<left<<"\t     "<<setw(30)<<x.getProductName();
 			cout<<left<<setw(20)<<x.getProductPrice();
 			cout<<"\n";
 		}
 		
-		cout<<"\n----------------------------------------------------------------\n";
-		cout<<"                                             TOTAL = Rs.";
+		cout<<"\n----------------------------------------------------------------------------\n";
+		cout<<"                                                           TOTAL = Rs.";
 		
 		
 	}
@@ -270,7 +235,7 @@ void RetailStore::viewAllCustomers()
 		for(int i = 0; i < customer_count;++i)
 			customer_list[i].printCustomerDetails();
 	else
-	 cout<<"No customers registered yet!";
+	 cout<<"\nNo customers registered yet!\n";
 }
 
 void RetailStore::viewAllProducts()
@@ -288,8 +253,7 @@ void RetailStore::viewAllProducts()
 }
 inline RetailStore::~RetailStore()
 {
-	delete[] product_list;
-	delete[] customer_list;
+	cout<<"\n\nCLOSING THE STORE FOR THE DAY.....\n";
 }
 
 
@@ -298,36 +262,21 @@ Customer::Customer()
 	customerID = 0;
 	customerName  = "\0";
 	contactNumber = 0;
-	list_size = 10;
 	list_count = 0;
-	list = new Product[list_size];
+
 }
 void Customer::setCustomerDetails(int id, string name, long number)
 {
 	customerID = id;
 	customerName = name;
 	contactNumber = number;
-	list_size = 10;
 	list_count = 0;
-	list = new Product[list_size];
+
 }
 
 void Customer::addBookedProduct(Product x)
 {
-	if(list_count == list_size )
-		{
-			Product *temp = new Product[list_size * 2];
-			
-			for(int i = 0; i < list_size; ++i)
-			{
-				temp[i] = list[i]; 
-			}
-			
-			delete[] list;
-			list = temp; 
-			list_size *= 2;
-		}
-		
+	if(list_count < 40 )
 		list[list_count++] = x;
 }
 inline Product Customer::inListAtIndex(int i)
@@ -361,7 +310,7 @@ void Customer::printCustomerDetails()
 	if(list_count)
 	{
 		
-		cout<<"Sr no\t\tProduct ID\t\tProduct Name\t\tPrice";
+		cout<<"Sr no\t    Product ID\t\t  Product Name\t\tProduct Status\t\t        Price\n";
 		for(int i  =0; i < list_count;++i)
 		{	cout<<i+1<<"\t";list[i].printProductDetails();cout<<endl;
 		}

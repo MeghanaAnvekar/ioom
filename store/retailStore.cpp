@@ -24,7 +24,9 @@ int main()
 		float discount, price, amount;
 		switch(choice)
 		{
-			case 1:	cout<<"\nEnter Product details....\n";
+			case 1:	cout<<"\nADD PRODUCT\n";
+					cout<<"-------------------------------\n\n";
+					cout<<"\nEnter Product details....\n";
 					cout<<"Name : ";
 					cin.ignore();
 					getline(cin,name);
@@ -37,7 +39,9 @@ int main()
 					cout<<"\nProduct was added successfully !\n\n";
 					break;
 			
-			case 2: cout<<"\nEnter Customer details....\n";
+			case 2: cout<<"\nADD CUSTOMER\n";
+					cout<<"-------------------------------\n\n";
+					cout<<"\nEnter Customer details....\n";
 					cout<<"Name : ";
 					cin.ignore();
 					getline(cin,name);
@@ -47,7 +51,9 @@ int main()
 					cout<<"\nCustomer was added successfully !\n\n";
 					break;
 			
-			case 3: cout<<"\nEnter following details...\n";
+			case 3: cout<<"\nBOOK PRODUCT\n";
+					cout<<"-------------------------------\n\n";
+					cout<<"\nEnter following details...\n";
 					cout<<"\nCustomer Name : ";
 					cin.ignore();
 					getline(cin, name);
@@ -59,16 +65,17 @@ int main()
 					cout<<"Qty : ";
 					cin>>qty;
 					count = store.bookProduct(name,contact,productName,qty);
-					cout<<"\n count = \n"<<count;
 					if(count > 0)
-						cout<<"\n\n"<<count<<"items were booked successfully !\n";
+						cout<<"\n\n"<<count<<" items were booked successfully !\n";
 					else if(count < 0)
 						cout<<"\nCustomer does not exist!\n";
 					else
 						cout<<"\nOut of Stock !\n";
 					break;
 			
-			case 4: cout<<"\nEnter following details...\n";
+			case 4: cout<<"\nGENERATE BILL \n";
+					cout<<"-------------------------------\n\n";
+					cout<<"\nEnter following details...\n";
 					cout<<"\nCustomer Name : ";
 					cin.ignore();
 					getline(cin, name);
@@ -87,7 +94,9 @@ int main()
 						
 					break;
 			
-			case 5: cout<<"\nEnter following details...\n";
+			case 5: cout<<"\nVIEW CUSTOMER DETAILS \n";
+					cout<<"-------------------------------\n\n";
+					cout<<"\nEnter following details...\n";
 					cout<<"\nCustomer Name : ";
 					cin.ignore();
 					getline(cin, name);
@@ -96,9 +105,13 @@ int main()
 					store.viewCustomerDetails(name,contact);
 					break;
 					
-			case 6: store.viewAllCustomers();
+			case 6: cout<<"\nVIEW ALL CUSTOMER DETAILS \n";
+					cout<<"-------------------------------\n\n";
+					store.viewAllCustomers();
 					break;
-			case 7: store.viewAllProducts();
+			case 7: cout<<"\nVIEW ALL PRODUCT DETAILS \n";
+					cout<<"-------------------------------\n\n";
+					store.viewAllProducts();
 					break;
 			case 8: choice = 8;
 					break;
