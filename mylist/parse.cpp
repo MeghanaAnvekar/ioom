@@ -7,8 +7,8 @@
 using namespace std;
 
 long num_chars(FILE * fp);
-long num_lines(FILE * fp);
-long num_words(FILE * fp);
+long num_lines(const char*);
+long num_words(const char*);
 
 void find_chars(FILE * fp);
 void find_identifiers(FILE * fp);
@@ -48,8 +48,8 @@ int main()
 	{
 		
 		cout<<"\nNo. of  Characters = "<<num_chars(fp);
-		cout<<"\nNo. of Lines = "<<num_lines(fp);
-		cout<<"\nNo. of Words = "<<num_words(fp);
+		cout<<"\nNo. of Lines = "<<num_lines(file);
+		cout<<"\nNo. of Words = "<<num_words(file);
 
 		find_chars(fp);
 		find_identifiers(fp);
@@ -70,6 +70,7 @@ int main()
 		most_used_numbers(k);
 		cout<<"\n";
 		most_used_identifiers(k);
+		cout<<"\n";
 	}
 
 	return 0;
@@ -84,48 +85,43 @@ long num_chars(FILE * fp)
 	return i;
 }
 
-long num_lines(FILE * fp)
+long num_lines(const char* file)
 {
 	long ctr = 0;
-	char ch;
-
-	while((ch = fgetc(fp)) && !feof(fp))
+	string line;
+	ifstream fp(file);
+	while(getline(fp,line))
 	{
-		if(ch == '\n')
-			++ctr;
+		++ctr;
 	}
-
-	fseek(fp,0L,SEEK_SET);
+	fp.close();
 	return ctr;
 }
 
-long num_words(FILE * fp)
+long num_words(const char* file)
 {
 	int ctr = 0;
-	char ch;
-	//skipping initial spaces if any
-	while((ch = fgetc(fp))!= EOF && (ch == ' ' || ch == '\t'))
-		;
-
-	while((ch = fgetc(fp)) && !feof(fp))
+	string word;
+	
+	
+	ifstream fp(file);
+	
+	while(fp>>word)
 	{
-		if(ch == ' ')
-			ctr++;
+		ctr++;
 	}
-
-	fseek(fp,0L,SEEK_SET);
+	fp.close();
 	return ctr;
 
 }
-
 void find_identifiers(FILE * fp)
 {
 	
-	char ch;
+	char ch,prev = '*';
 	while((ch = fgetc(fp)) != EOF )
 	{
 		string id;
-		if(id.length() == 0 && isaplha(ch))
+		if(id.length() == 0 && isaplha(ch) && !isalpha(prev) && !isdigit(prev))
 		{	id += ch;
 			
 			while((ch = fgetc(fp))  != EOF && (isaplha(ch) || isdigit(ch)) )
@@ -169,6 +165,7 @@ void find_identifiers(FILE * fp)
 			
 			
 		}
+		prev = ch;
 		
 	}
 	fseek(fp,0L,SEEK_SET);
@@ -233,7 +230,10 @@ void find_chars(FILE * fp)
 	while((ch = fgetc(fp)) != EOF)
 	{
 		string str;
-		str += ch;
+		if(isalpha(ch))
+			str += tolower(ch);
+		else
+			str += ch;
 		if(!chars.searchandinc(str))
 			{
 				mylist aux;
@@ -267,15 +267,15 @@ void find_chars(FILE * fp)
 
 void most_used_numbers(int k)
 {
-	int ctr = k;
+	int ctr = 1;
 	
-	while(ctr-- && numbers.length())
+	while(ctr <=k && numbers.length())
 	{
 		listnode * temp = numbers.findmaxcount();
 		cout<<endl<<ctr+1<<"th most used number "<<temp->s;
 		numbers.removemaxcount();
 
-		
+		ctr++;
 		
 	}
 	
@@ -283,14 +283,14 @@ void most_used_numbers(int k)
 
 void most_used_identifiers(int k)
 {
-	int ctr = k;
+	int ctr = 1;
 	
-	while(ctr-- && identifiers.length())
+	while(ctr <=k && identifiers.length())
 	{
 		listnode * temp = identifiers.findmaxcount();
-		cout<<endl<<ctr+1<<"th most used identifier "<<temp->s;
+		cout<<endl<<ctr<<"th most used identifier "<<temp->s;
 		identifiers.removemaxcount();
-		
+		ctr++;
 		
 	}
 	
@@ -298,14 +298,15 @@ void most_used_identifiers(int k)
 
 void most_used_chars(int k)
 {
-	int ctr = k;
+	int ctr = 1;
 	
-	while(ctr-- && chars.length())
+	while(ctr <=k && chars.length())
 	{
 		listnode * temp = chars.findmaxcount();
-		cout<<endl<<ctr+1<<"th most used character "<<temp->s;
+		cout<<endl<<ctr<<"th most used character "<<temp->s;
 		chars.removemaxcount();
-		
+		ctr++;
+				
 			
 	}
 	
@@ -324,4 +325,12 @@ int isdigit(char c)
 		return 1;
 	else
 		return 0;
+}
+
+char tolower(char ch)
+{
+	if(ch >= 'A' && ch <= 'Z')
+		ch = ch-'A'+'a';
+		
+	return ch;
 }
